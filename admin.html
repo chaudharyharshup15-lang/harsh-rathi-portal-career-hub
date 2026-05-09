@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsh Rathi - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon: #00f2ff; --royal: #0062ff; --bg: #010a16; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: white; margin: 0; }
+        
+        .admin-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        header { text-align: center; padding: 30px 0; border-bottom: 2px solid var(--neon); margin-bottom: 30px; }
+        h1 { font-family: 'Orbitron'; font-size: 2.5rem; color: var(--neon); text-shadow: 0 0 15px var(--neon); margin: 0; }
+        .subtitle { color: #aaa; margin-top: 5px; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; border-bottom: 2px solid #333; }
+        .tab-btn { background: rgba(255,255,255,0.1); color: white; border: none; padding: 12px 20px; cursor: pointer; border-radius: 8px 8px 0 0; font-weight: bold; transition: 0.3s; border: 1px solid #333; border-bottom: none; }
+        .tab-btn.active { background: var(--royal); color: white; border-color: var(--neon); }
+        .tab-btn:hover { background: rgba(0,98,255,0.3); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Dashboard Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: rgba(0,242,255,0.1); border: 2px solid var(--neon); border-radius: 12px; padding: 20px; text-align: center; }
+        .stat-value { font-size: 2.5rem; font-family: 'Orbitron'; color: var(--neon); margin: 10px 0; }
+        .stat-label { font-size: 0.9rem; opacity: 0.7; }
+
+        /* Info Box */
+        .info-box { background: rgba(255,255,255,0.05); border: 1px solid var(--neon); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .info-box h3 { color: var(--neon); margin-top: 0; }
+        .info-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #333; }
+        .info-item:last-child { border-bottom: none; }
+        .info-label { font-weight: 600; }
+        .info-value { color: var(--neon); font-weight: bold; }
+
+        /* Messages Table */
+        .messages-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .messages-table th { background: var(--royal); padding: 15px; text-align: left; font-family: 'Orbitron'; }
+        .messages-table td { padding: 12px; border-bottom: 1px solid #333; }
+        .messages-table tr:hover { background: rgba(0,242,255,0.05); }
+        .delete-btn { background: #ff4444; border: none; padding: 5px 12px; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; }
+        .delete-btn:hover { background: #ff6666; }
+
+        /* Form Inputs */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--neon); }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: rgba(255,255,255,0.05); color: white; font-family: 'Poppins'; font-size: 1rem; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--neon); background: rgba(0,242,255,0.05); }
+
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn { padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: 'Orbitron'; }
+        .btn-primary { background: var(--neon); color: black; }
+        .btn-primary:hover { transform: scale(1.05); }
+        .btn-secondary { background: var(--royal); color: white; border: 1px solid var(--neon); }
+        .btn-secondary:hover { background: rgba(0,98,255,0.8); }
+        .btn-danger { background: #ff4444; color: white; }
+        .btn-danger:hover { background: #ff6666; }
+
+        .logout-btn { position: fixed; top: 20px; right: 20px; background: var(--royal); color: white; border: 2px solid var(--neon); padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; font-family: 'Orbitron'; }
+        .logout-btn:hover { background: var(--neon); color: black; }
+
+        .no-data { text-align: center; padding: 40px; color: #aaa; }
+    </style>
+</head>
+<body>
+
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+
+    <div class="admin-container">
+        <header>
+            <h1>🔐 ADMIN DASHBOARD</h1>
+            <p class="subtitle">Harsh Rathi Career Hub - Management Panel</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
+            <button class="tab-btn" onclick="showTab('team')">👥 Team Info</button>
+            <button class="tab-btn" onclick="showTab('messages')">💬 Messages</button>
+            <button class="tab-btn" onclick="showTab('settings')">⚙️ Settings</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <h2 style="color: var(--neon);">Welcome to Admin Panel 👋</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Messages</div>
+                    <div class="stat-value" id="totalMessages">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Website Status</div>
+                    <div class="stat-value" style="color: #00ff00;">🟢 LIVE</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Last Activity</div>
+                    <div class="stat-value" style="font-size: 1rem;" id="lastActivity">Now</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Info Tab -->
+        <div id="team" class="tab-content">
+            <h2 style="color: var(--neon);">👥 Team Information</h2>
+            <div class="info-box">
+                <h3>Team Lead</h3>
+                <div class="info-item">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value">Harsh Rathi</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Role:</span>
+                    <span class="info-value">Founder & Career Counselor</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Primary Contact:</span>
+                    <span class="info-value">📱 8755823445</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Secondary Contact:</span>
+                    <span class="info-value">📱 9548523446</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">harsh.rathi@careerhub.in</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Established:</span>
+                    <span class="info-value">2026</span>
+                </div>
+            </div>
+
+            <div class="info-box" style="margin-top: 20px;">
+                <h3>Organization Stats</h3>
+                <div class="info-item">
+                    <span class="info-label">Career Paths Covered:</span>
+                    <span class="info-value">6</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Official Portals Linked:</span>
+                    <span class="info-value">6</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Languages Supported:</span>
+                    <span class="info-value">Hindi, English</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Services:</span>
+                    <span class="info-value">Career Guidance, AI Assistant, Counseling</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Tab -->
+        <div id="messages" class="tab-content">
+            <h2 style="color: var(--neon);">💬 Student Messages</h2>
+            <div id="messagesContainer"></div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content">
+            <h2 style="color: var(--neon);">⚙️ Settings</h2>
+            
+            <div class="info-box">
+                <h3>Change Admin Password</h3>
+                <div class="form-group">
+                    <label for="currentPass">Current Password:</label>
+                    <input type="password" id="currentPass" placeholder="Enter current password">
+                </div>
+                <div class="form-group">
+                    <label for="newPass">New Password:</label>
+                    <input type="password" id="newPass" placeholder="Enter new password">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPass">Confirm Password:</label>
+                    <input type="password" id="confirmPass" placeholder="Confirm new password">
+                </div>
+                <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+            </div>
+
+            <div class="info-box" style="margin-top: 20px;">
+                <h3>Data Management</h3>
+                <p>Download or clear all data</p>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="exportData()">📥 Export Data (CSV)</button>
+                    <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if logged in
+        window.onload = function() {
+            if(!sessionStorage.getItem('adminLoggedIn')) {
+                window.location.href = 'index.html';
+            }
+            loadMessages();
+            updateStats();
+        };
+
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Highlight selected button
+            event.target.classList.add('active');
+        }
+
+        function loadMessages() {
+            const submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
+            const container = document.getElementById('messagesContainer');
+            
+            if(submissions.length === 0) {
+                container.innerHTML = '<div class="no-data">कोई संदेश नहीं आया अभी। 📭</div>';
+                return;
+            }
+
+            let html = '<table class="messages-table"><thead><tr><th>Name</th><th>Contact</th><th>Message</th><th>Time</th><th>Action</th></tr></thead><tbody>';
+            
+            submissions.forEach((item, index) => {
+                html += `<tr>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.message.substring(0, 50)}...</td>
+                    <td>${item.timestamp}</td>
+                    <td><button class="delete-btn" onclick="deleteMessage(${index})">Delete</button></td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function deleteMessage(index) {
+            if(confirm('क्या आप इस संदेश को delete करना चाहते हैं?')) {
+                let submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
+                submissions.splice(index, 1);
+                localStorage.setItem('submissions', JSON.stringify(submissions));
+                loadMessages();
+                alert('संदेश delete हो गया!');
+            }
+        }
+
+        function updateStats() {
+            const submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
+            document.getElementById('totalMessages').textContent = submissions.length;
+            document.getElementById('lastActivity').textContent = new Date().toLocaleTimeString('hi-IN');
+        }
+
+        function changePassword() {
+            const current = document.getElementById('currentPass').value;
+            const newPass = document.getElementById('newPass').value;
+            const confirm = document.getElementById('confirmPass').value;
+
+            if(current !== 'harsh@2026') {
+                alert('Current password गलत है!');
+                return;
+            }
+            if(newPass !== confirm) {
+                alert('New passwords match नहीं कर रहे हैं!');
+                return;
+            }
+            if(newPass.length < 6) {
+                alert('Password कम से कम 6 characters का होना चाहिए!');
+                return;
+            }
+
+            localStorage.setItem('adminPassword', newPass);
+            alert('Password successfully update हो गया!');
+            document.getElementById('currentPass').value = '';
+            document.getElementById('newPass').value = '';
+            document.getElementById('confirmPass').value = '';
+        }
+
+        function exportData() {
+            const submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
+            if(submissions.length === 0) {
+                alert('Export करने के लिए कोई data नहीं है!');
+                return;
+            }
+
+            let csv = 'Name,Contact,Message,Time\n';
+            submissions.forEach(item => {
+                csv += `"${item.name}","${item.email}","${item.message}","${item.timestamp}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'harsh_rathi_messages.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function clearAllData() {
+            if(confirm('⚠️ यह सभी data को DELETE कर देगा। क्या आप sure हैं?')) {
+                if(confirm('Are you absolutely sure? यह action reverse नहीं हो सकता!')) {
+                    localStorage.removeItem('submissions');
+                    loadMessages();
+                    alert('सभी data delete हो गया!');
+                }
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+</body>
+</html>
