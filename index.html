@@ -86,7 +86,7 @@
         <div class="ai-hub">
             <h3 style="font-family: 'Orbitron'; margin-top:0; color: var(--neon);">🤖 AI Career Assistant</h3>
             <div class="chat-area" id="chatArea">
-                <div class="ai-msg">Namaste! 👋 मैं Harsh Rathi के AI Career Assistant हूँ। आप मुझसे किसी भी कोर्स (BCA, NEET, Law, CA) या करियर के बारे में पूछ सकते हैं।</div>
+                <div class="ai-msg">Namaste! 🙏 मैं Harsh Rathi के AI Career Assistant हूँ। आप मुझसे किसी भी कोर्स (BCA, NEET, Law, CA) या करियर के बारे में पूछ सकते हैं।</div>
             </div>
             <div class="input-box">
                 <input type="text" id="userInput" placeholder="अपना सवाल यहाँ पूछें...">
@@ -185,13 +185,13 @@
 
         // AI Brain
         const brain = {
-            "bca": "BCA से आप software engineer, web developer, या AI specialist बन सकते हैं। 3-4 साल की degree के बाद top companies में placement मिलता है। AICTE की साइट पर colleges की list देखें।",
-            "neet": "NEET के ज़रिए आप MBBS, BDS, या Nursing में admission पा सकते हैं। MCC पोर्टल पर सभी counselling information है। Hard work और dedication से ये संभव है!",
+            "bca": "BCA से आप software engineer, web developer, या AI specialist बन सकते हैं। 3-4 सालों की degree के बाद top companies में placement मिलता है। AICTE की साइट पर colleges की list देखें।",
+            "neet": "NEET के जरिये आप MBBS, BDS, या Nursing में admission पा सकते हैं। MCC पोर्टल पर सभी counselling information है। Hard work और dedication से ये संभव है!",
             "law": "CLAT के through NLU में admission लें और वकील बन जाएँ। Consortium of NLUs की साइट पर सभी details मिलेंगी। Law का future बहुत शानदार है!",
-            "ca": "CA बनने के लिए 12th के बाद articleship शुरू करें। ICAI से registration लें। 4.5 साल की मेहनत के बाद आप qualified CA बन जाएँगे।",
+            "ca": "CA बनने के लिए 12th के बाद articleship शुरू करें। ICAI से registration लें। 4.5 सालों की मेहनत के बाद आप qualified CA बन जाएंगे।",
             "career": "Career के लिए अपनी रुचि समझें। क्या आप Tech, Medical, Law, या Business में interested हैं? हर field में opportunities हैं!",
-            "hi": "नमस्ते! 👋 मैं Harsh Rathi का AI Assistant हूँ। आपकी करियर journey में आपकी मदद के लिए यहाँ हूँ।",
-            "hello": "Hello! 👋 आपका स्वागत है Harsh Rathi Career Hub पर। आप किस field में interested हैं?",
+            "hi": "नमस्ते! 🙏 मैं Harsh Rathi का AI Assistant हूँ। आपकी करियर journey में आपकी मदद के लिए यहाँ हूँ।",
+            "hello": "Hello! 🙏 आपका स्वागत है Harsh Rathi Career Hub पर। आप किस field में interested हैं?",
             "course": "हमारे पास 6 major career paths हैं: Tech, Medical, Law, Commerce, Government Jobs, और Skill Development। कोई भी एक choose करें!"
         };
 
@@ -240,7 +240,7 @@
             });
             localStorage.setItem('submissions', JSON.stringify(submissions));
             
-            alert('धन्यवाद! आपका संदेश भेज दिया गया। हम जल्द आपसे संपर्क करेंगे।');
+            alert('धन्यवाद! आपका संदेश भेज दिया गया। हम जल्दी आपसे संपर्क करेंगे।');
             contactForm.reset();
         });
 
@@ -257,6 +257,7 @@
         function adminLogin() {
             const password = document.getElementById('adminPassword').value;
             if(password === 'harsh@2026') {
+                sessionStorage.setItem('adminLoggedIn', 'true');
                 window.location.href = 'admin.html';
             } else {
                 alert('गलत पासवर्ड! कृपया फिर से कोशिश करें।');
